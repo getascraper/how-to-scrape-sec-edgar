@@ -1,20 +1,86 @@
-# How to Scrape SEC EDGAR Filings in Node.js
+<div align="center">
 
-Extract SEC EDGAR filings (10-K, 10-Q, 8-K) into RAG-ready JSON using the [SEC EDGAR RAG Extractor](https://apify.com/devanshlive/sec-edgar-rag-extractor) actor on Apify -- no browser automation or proxies required.
+# SEC EDGAR Scraper: Filings as JSON for RAG
 
-## What this example does
+[![Apify Actor](https://img.shields.io/badge/Apify-Actor-ff6b35?style=for-the-badge&logo=apify&logoColor=white)](https://apify.com/devanshlive/sec-edgar-rag-extractor)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Made with Love](https://img.shields.io/badge/Made%20with-Love-e31b23?style=for-the-badge)](https://github.com/getascraper)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-blue?style=for-the-badge)](https://github.com/getascraper/how-to-scrape-sec-edgar)
 
-- Calls the SEC EDGAR RAG Extractor actor via the Apify client
-- Passes CIK list, form types, date range, and optional search query
-- Waits for the run to complete
-- Fetches results from the actor's dataset
-- Prints each filing to the console
+**Extract SEC EDGAR filings (10-K, 10-Q, 8-K) into RAG-ready chunks with financial metadata in seconds.**
 
-## Prerequisites
+Built for finance AI developers, compliance analysts, and M&A researchers who need structured corporate disclosures without manual parsing.
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- An [Apify account](https://console.apify.com/sign-up) (free tier available)
-- An [Apify API token](https://console.apify.com/settings/integrations)
+[Quick Start](#quick-start) · [API Reference](#api-reference) · [Pricing](#pricing) · [Support](#support)
+
+![Apify Actor Hero](docs/sec-edgar-actor-hero.png)
+
+</div>
+
+---
+
+## Quick Start
+
+```javascript
+import { ApifyClient } from 'apify-client';
+import 'dotenv/config';
+
+const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
+
+const run = await client.actor('devanshlive/sec-edgar-rag-extractor').call({
+  cikList: ['0000320193'],
+  formTypes: ['10-K'],
+  dateFrom: '2024-01-01',
+  dateTo: '2024-12-31',
+  maxFilings: 5,
+  userAgent: 'Jane Smith jane@acme.com',
+});
+
+const { items } = await client.dataset(run.defaultDatasetId).listItems();
+console.log(items);
+```
+
+**Output:**
+```json
+{
+  "accession_no": "0000320193-24-000012",
+  "cik": "0000320193",
+  "company_name": "Apple Inc.",
+  "ticker": "AAPL",
+  "form_type": "10-K",
+  "filing_date": "2024-02-15",
+  "period_of_report": "2023-09-30",
+  "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000012/aapl-20230930.htm",
+  "source": "full_text",
+  "chunks": [
+    {
+      "idx": 0,
+      "text": "The Company designs, manufactures and markets...",
+      "tokens": 512
+    }
+  ]
+}
+```
+
+---
+
+## Features
+
+- **10-K, 10-Q, 8-K forms** all supported in one Actor
+- **CIK-based lookup** by company identifier
+- **Exhibit stripping** for clean primary document extraction
+- **cl100k_base tokenization** with 512 tokens per chunk
+- **Financial metadata** including ticker, filing date, and reporting period
+
+---
+
+## What this actor does
+
+This Actor extracts SEC EDGAR filings by CIK, form type, and date range. It parses the primary document (exhibits stripped) and returns structured JSON with financial metadata.
+
+It supports 10-K (annual), 10-Q (quarterly), and 8-K (current event) filings. Each filing includes accession number, company name, ticker, filing date, and token-aware chunks.
+
+---
 
 ## Installation
 
@@ -22,52 +88,32 @@ Extract SEC EDGAR filings (10-K, 10-Q, 8-K) into RAG-ready JSON using the [SEC E
 npm install
 ```
 
-## Environment setup
+Copy the environment file and add your Apify API token:
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and replace `your_apify_token_here` with your actual Apify API token.
+Open `.env` and replace `your_apify_token_here` with your actual Apify API token. Get one free at [console.apify.com](https://console.apify.com/settings/integrations).
 
-## Usage
+---
 
-```bash
-npm start
-```
+## Input
 
-## Code example
+| Field | Type | Description | Default |
+|-------|------|-------------|---------|
+| `cikList` | array | 10-digit Central Index Keys | none |
+| `formTypes` | array | `10-K`, `10-Q`, `8-K` | none |
+| `dateFrom` | string | Start date (YYYY-MM-DD) | none |
+| `dateTo` | string | End date (YYYY-MM-DD) | none |
+| `maxFilings` | integer | Max filings per company | 100 |
+| `userAgent` | string | SEC-required user agent string | none |
 
-```javascript
-import { ApifyClient } from 'apify-client';
-import 'dotenv/config';
+---
 
-const client = new ApifyClient({
-  token: process.env.APIFY_TOKEN,
-});
+## Output
 
-const input = {
-  cikList: ['0000320193'],
-  formTypes: ['10-K'],
-  dateFrom: '2024-01-01',
-  dateTo: '2024-12-31',
-  maxFilings: 5,
-  userAgent: 'Jane Smith jane@acme.com',
-};
-
-const run = await client.actor('devanshlive/sec-edgar-rag-extractor').call(input);
-
-console.log('Results from dataset');
-console.log(`Check your data here: https://console.apify.com/storage/datasets/${run.defaultDatasetId}`);
-const { items } = await client.dataset(run.defaultDatasetId).listItems();
-items.forEach((item) => {
-  console.dir(item);
-});
-```
-
-## Example output
-
-See `sample-output.json` for a full example. Each filing includes:
+Each filing is a structured JSON record with token-aware chunks. Download as JSON, CSV, Excel, or HTML.
 
 | Field | Description |
 |-------|-------------|
@@ -85,22 +131,53 @@ See `sample-output.json` for a full example. Each filing includes:
 | `chunks[].text` | Chunk text |
 | `chunks[].tokens` | Token count (≤ 512) |
 
-## Use cases
+See `sample-output.json` for a full example.
+
+---
+
+## Pricing
+
+**$0.02 per filing.**
+
+A run of 50 filings typically completes in 2 to 3 minutes. Pay only for what you extract.
+
+---
+
+## Use Cases
 
 - **Finance AI:** Train models on clean corporate disclosures
 - **Compliance RAG:** Build chatbots that cite specific regulatory filings
 - **M&A research:** Feed target company 10-Ks into intelligence pipelines
 - **Sell-side research:** Monitor 8-K events and earnings drift
 
-## Try the actor on Apify
+---
 
-[Open the SEC EDGAR RAG Extractor on Apify](https://apify.com/devanshlive/sec-edgar-rag-extractor)
+## FAQ
 
-## Related resources
+**What is a CIK?**
+A Central Index Key is a 10-digit identifier assigned by the SEC to each filer. You can find CIKs on the SEC's EDGAR search page.
+
+**Why do I need a user agent?**
+The SEC requires a user agent string for API access. Provide your name and email in the format: `Your Name your@email.com`.
+
+**What forms are supported?**
+10-K (annual), 10-Q (quarterly), and 8-K (current event) filings.
+
+---
+
+## Support
+
+Open an issue in the [Apify Console](https://console.apify.com/actors/devanshlive~sec-edgar-rag-extractor/issues).
+
+---
+
+## Related Resources
 
 - [SEC EDGAR documentation](https://www.sec.gov/edgar/searchedgar/companysearch)
 - [Apify Client for JavaScript](https://docs.apify.com/api/client/js/)
 
-## License
+---
 
-MIT
+**Ready to start extracting?**
+
+[Open the SEC EDGAR Scraper on Apify](https://apify.com/devanshlive/sec-edgar-rag-extractor)
