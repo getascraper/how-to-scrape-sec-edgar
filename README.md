@@ -1,13 +1,13 @@
 <div align="center">
 
-# SEC EDGAR Scraper: Filings as JSON for RAG
+# SEC EDGAR Scraper | Financial Data Extraction API | Apify Actor
 
 [![Apify Actor](https://img.shields.io/badge/Apify-Actor-ff6b35?style=for-the-badge&logo=apify&logoColor=white)](https://apify.com/devanshlive/sec-edgar-rag-extractor)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Made with Love](https://img.shields.io/badge/Made%20with-Love-e31b23?style=for-the-badge)](https://github.com/getascraper)
 [![Open Source](https://img.shields.io/badge/Open%20Source-Yes-blue?style=for-the-badge)](https://github.com/getascraper/how-to-scrape-sec-edgar)
 
-**Extract SEC EDGAR filings (10-K, 10-Q, 8-K) into RAG-ready chunks with financial metadata in seconds.**
+**SEC EDGAR scraper and financial data extraction API. Extract 10K, 10Q filings and SEC filings with this Apify actor. Free tier included.**
 
 Built for finance AI developers, compliance analysts, and M&A researchers who need structured corporate disclosures without manual parsing.
 
