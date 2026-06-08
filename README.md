@@ -2,7 +2,7 @@
 
 # SEC EDGAR Scraper | Financial Data Extraction API | Apify Actor
 
-[![Apify Actor](https://img.shields.io/badge/Apify-Actor-ff6b35?style=for-the-badge&logo=apify&logoColor=white)](https://apify.com/devanshlive/sec-edgar-rag-extractor)
+[![Apify Actor](https://img.shields.io/badge/Apify-Actor-ff6b35?style=for-the-badge&logo=apify&logoColor=white)](https://apify.com/getascraper/sec-edgar-rag-extractor)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Made with Love](https://img.shields.io/badge/Made%20with-Love-e31b23?style=for-the-badge)](https://github.com/getascraper)
 [![Open Source](https://img.shields.io/badge/Open%20Source-Yes-blue?style=for-the-badge)](https://github.com/getascraper/how-to-scrape-sec-edgar)
@@ -27,7 +27,7 @@ import 'dotenv/config';
 
 const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
 
-const run = await client.actor('devanshlive/sec-edgar-rag-extractor').call({
+const run = await client.actor('getascraper/sec-edgar-rag-extractor').call({
   cikList: ['0000320193'],
   formTypes: ['10-K'],
   dateFrom: '2024-01-01',
@@ -167,7 +167,7 @@ The SEC requires a user agent string for API access. Provide your name and email
 
 ## Support
 
-Open an issue in the [Apify Console](https://console.apify.com/actors/devanshlive~sec-edgar-rag-extractor/issues).
+Open an issue in the [Apify Console](https://console.apify.com/actors/getascraper~sec-edgar-rag-extractor/issues).
 
 ---
 
@@ -180,4 +180,4 @@ Open an issue in the [Apify Console](https://console.apify.com/actors/devanshliv
 
 **Ready to start extracting?**
 
-[Open the SEC EDGAR Scraper on Apify](https://apify.com/devanshlive/sec-edgar-rag-extractor)
+[Open the SEC EDGAR Scraper on Apify](https://apify.com/getascraper/sec-edgar-rag-extractor)

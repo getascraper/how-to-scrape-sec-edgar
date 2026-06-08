@@ -14,7 +14,7 @@ const input = {
   userAgent: 'Jane Smith jane@acme.com',
 };
 
-const run = await client.actor('devanshlive/sec-edgar-rag-extractor').call(input);
+const run = await client.actor('getascraper/sec-edgar-rag-extractor').call(input);
 
 console.log('Results from dataset');
 console.log(`Check your data here: https://console.apify.com/storage/datasets/${run.defaultDatasetId}`);
